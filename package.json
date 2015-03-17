@@ -18,6 +18,6 @@
   ],
   "scripts": {
     "test": "mocha --compilers js:babel/register",
-    "build": "babel src/config.js --out-file lib/config.js"
+    "transpile": "babel src/config.js --out-file lib/config.js"
   }
 }
