@@ -2,6 +2,8 @@
 
 A [12-factor](http://12factor.net/config) configuration module for Node.js/io.js.
 
+[![Build Status][travis-image]][travis-url]
+
 ## Principles
 
   * Provide config in the environment variables. This ensures that infrastructure and deployment concerns don't leak into application code.
@@ -96,4 +98,7 @@ node app.js
 
 ## License
 
-MIT
+[MIT](LICENSE)
+
+[travis-image]: https://img.shields.io/travis/iondrive/config.svg
+[travis-url]: https://travis-ci.org/iondrive/config
