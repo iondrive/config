@@ -6,7 +6,7 @@ A [12-factor](http://12factor.net/config) configuration module for Node.js/io.js
 
 ## Principles
 
-  * Provide config in the environment variables. This ensures that infrastructure and deployment concerns don't leak into application code.
+  * Application config is provided via environment variables. This ensures that infrastructure and deployment concerns don't leak into application code.
   * Every variable **must** be defined. This prevents scenarios where config can come from two or more places, such as defaults, command line or config files, simplifying debugging and setup.
   * Basic typed config, including enums. This prevents a category of bugs when checking config values, such as `"false" !== false`.
 
@@ -38,7 +38,7 @@ module.exports = {
 
 ### Types
 
-The type must be one of `string`, `boolean`, `integer`, or `number`.
+The type must be one of `string`, `boolean`, `integer`, `number` or `enum` (`enum` is implied when the value is an array).
 
   * The `string` type will match any value (since environment variables are all strings).
   * The `boolean` type will perform a case insenstive match on `'false'`, `'true'`, `'yes'`, `'no'`, `'y'`, `'n'`, `'1'` and `'0'`.
@@ -71,7 +71,7 @@ module.exports = {
 Given the defintion file abolve and by running the app as follows:
 
 ```bash
-APP_STR="hello" APP_BOOL="false" APP_INT="123", APP_NUM="3.14" node app.js
+APP_STR="hello" APP_BOOL="false" APP_INT="123" APP_NUM="3.14" APP_ENM="b" node app.js
 ```
 
 The config can be accessed within the app as follows:
@@ -86,6 +86,7 @@ assert.strictEqual(config.STR, 'hello');
 assert.strictEqual(config.BOOL, false);
 assert.strictEqual(config.INT, 123);
 assert.strictEqual(config.NUM, 3.14);
+assert.strictEqual(config.ENM, 'b');
 ```
 
 ## Prefix
@@ -95,7 +96,7 @@ By default all variables must be prefixed by `APP` in the environment variables 
 The default `APP` prefix can be changed with the environment variable `NODE_CONFIG_PREFIX`:
 
 ```bash
-NODE_CONFIG_PREFIX="ABC" ABC_STR="hello" ABC_BOOL="false" ABC_INT="123", ABC_NUM="3.14" node app.js
+NODE_CONFIG_PREFIX="ABC" ABC_STR="hello" ABC_BOOL="false" ABC_INT="123" ABC_NUM="3.14" APP_ENM="b" node app.js
 ```
 
 ## Recommended deployment
@@ -109,6 +110,7 @@ export APP_STR="hello"
 export APP_BOOL="false"
 export APP_INT="123"
 export APP_NUM="3.14"
+export APP_ENM="b"
 ```
 
 This can be used by sourcing the file prior to executing the application:
