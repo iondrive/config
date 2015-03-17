@@ -1,3 +1,6 @@
 module.exports = {
-  FOO: 'number'
+  FOO: 'number',
+  BAR: {
+    type: 'number'
+  }
 };

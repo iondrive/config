@@ -2,5 +2,6 @@ module.exports = {
   STR: 'string',
   BOOL: 'boolean',
   INT: 'integer',
-  NUM: 'number'
+  NUM: 'number',
+  ENM: ['a', 'b', 'c']
 };

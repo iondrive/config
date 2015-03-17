@@ -27,6 +27,10 @@ const parsers = {
   number: value => {
     if (/^(\-|\+)?[0-9]+(\.[0-9]*)?$/.test(value)) return parseFloat(value, 10);
     throw Error('Cannot convert to a number');
+  },
+  enum: (value, values) => {
+    if (values.indexOf(value) > -1) return value;
+    throw Error('Value not found in enumeration values');
   }
 };
 
@@ -34,16 +38,29 @@ const config = module.exports = Object.create(null);
 
 for (let key in definition) {
   let envKey = (CONFIG_PREFIX + '_' + key).toUpperCase();
+
+  let def = definition[key];
+  let type = def;
+  let values, env;
+
+  if (Array.isArray(def)) {
+    type = 'enum';
+    values = def;
+  } else if (typeof def === 'object') {
+    type = def.type;
+    envKey = def.env || envKey;
+    values = def.values;
+  }
+
   let value = process.env[envKey];
 
   if (!value) {
     throw Error(`CONFIG: Environment variable ${envKey} is missing`);
   }
 
-  let type = definition[key];
   try {
-    if (!parsers[type]) throw Error('Invalid type');
-    config[key] = parsers[type](value);
+    if (!parsers[type]) throw Error('Invalid def');
+    config[key] = parsers[type](value, values);
   } catch (err) {
     throw Error(`CONFIG: Error parsing environment variable ${envKey}: ${err.message}`);
   }

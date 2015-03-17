@@ -1,3 +1,6 @@
 module.exports = {
-  FOO: 'boolean'
+  FOO: 'boolean',
+  BAR: {
+    type: 'boolean'
+  }
 };

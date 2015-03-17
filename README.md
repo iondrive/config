@@ -8,7 +8,7 @@ A [12-factor](http://12factor.net/config) configuration module for Node.js/io.js
 
   * Provide config in the environment variables. This ensures that infrastructure and deployment concerns don't leak into application code.
   * Every variable **must** be defined. This prevents scenarios where config can come from two or more places, such as defaults, command line or config files, simplifying debugging and setup.
-  * Basic typed config. This prevents a category of bugs when checking config values, such as `"false" !== false`.
+  * Basic typed config, including enums. This prevents a category of bugs when checking config values, such as `"false" !== false`.
 
 ## Install
 
@@ -31,7 +31,8 @@ module.exports = {
   STR: 'string',
   BOOL: 'boolean',
   INT: 'integer',
-  NUM: 'number'
+  NUM: 'number',
+  ENM: ['a', 'b', 'c']
 };
 ```
 
@@ -43,6 +44,27 @@ The type must be one of `string`, `boolean`, `integer`, or `number`.
   * The `boolean` type will perform a case insenstive match on `'false'`, `'true'`, `'yes'`, `'no'`, `'y'`, `'n'`, `'1'` and `'0'`.
   * The `integer` type will only match integers in decimal notation, e.g. `'123'`, `'-555'`.
   * The `number` type will only match decimal notation, e.g `'123'`, `'-3.14'`.
+  * The `enum` type will only match the string values provided.
+
+### Advanced options
+
+If the value of a config definition key is an object, it can declare the following properties:
+
+  * `type`: the type of the config variable.
+  * `env`: override the environment variable name (allows you to ignore the config prefix in special circumstances).
+  * `values`: for an enum type, the values allowed.
+
+```js
+// config.js
+
+module.exports = {
+  NODE_ENV: {
+    type: 'enum',
+    env: 'NODE_ENV',
+    values: ['development', 'test', 'production']
+  }
+};
+```
 
 ### Application usage
 
