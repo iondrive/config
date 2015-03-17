@@ -59,7 +59,7 @@ for (let key in definition) {
   }
 
   try {
-    if (!parsers[type]) throw Error('Invalid def');
+    if (!parsers[type]) throw Error('Invalid type');
     config[key] = parsers[type](value, values);
   } catch (err) {
     throw Error(`CONFIG: Error parsing environment variable ${envKey}: ${err.message}`);
