@@ -1,7 +1,7 @@
 {
   "name": "@iondrive/config",
   "description": "A 12-factor configuration module for Node.js/io.js.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Ben Shepheard <ben@iondrive.co.uk>",
   "license": "MIT",
   "repository": "iondrive/config",

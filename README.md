@@ -20,7 +20,7 @@ npm install @iondrive/config
 
 ### Definition file
 
-When `require('config')` is invoked it loads a config definition file `config.js` in the current working directory or a file specified by the environment variable `NODE_CONFIG_PATH`. The config definition file should export a map of variable names to types (we use `.js` over `.json` to allow commenting and dynamic configurations).
+When `require('@iondrive/config')` is invoked it loads a config definition file `config.js` in the current working directory or a file specified by the environment variable `NODE_CONFIG_PATH`. The config definition file should export a map of variable names to types (we use `.js` over `.json` to allow commenting and dynamic configurations).
 
 An example config definition file:
 
@@ -80,7 +80,7 @@ The config can be accessed within the app as follows:
 // app.js
 
 var assert = require('assert');
-var config = require('config');
+var config = require('@iondrive/config');
 
 assert.strictEqual(config.STR, 'hello');
 assert.strictEqual(config.BOOL, false);
