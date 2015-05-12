@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build": "tsglob && tsc",
-    "prepublish": "tsglob && tsc",
+    "prepublish": "npm run build",
     "test": "npm run build && mocha"
   }
 }
