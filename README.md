@@ -1,4 +1,4 @@
-# iondrive/config
+# @iondrive/config
 
 A [12-factor](http://12factor.net/config) configuration module for Node.js/io.js.
 
@@ -13,7 +13,7 @@ A [12-factor](http://12factor.net/config) configuration module for Node.js/io.js
 ## Install
 
 ```bash
-npm install iondrive/config
+npm install @iondrive/config
 ```
 
 ## Usage
