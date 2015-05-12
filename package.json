@@ -1,5 +1,5 @@
 {
-  "name": "config",
+  "name": "@iondrive/config",
   "description": "A 12-factor configuration module for Node.js/io.js.",
   "version": "0.0.1",
   "author": "Ben Shepheard <ben@iondrive.co.uk>",
@@ -8,8 +8,9 @@
   "main": "./lib/config.js",
   "dependencies": {},
   "devDependencies": {
-    "babel": "^4.7.13",
-    "mocha": "^2.2.1"
+    "mocha": "^2.2.4",
+    "ts-globber": "^0.3.1",
+    "typescript": "^1.5.0-beta"
   },
   "files": [
     "LICENSE",
@@ -17,7 +18,7 @@
     "lib/"
   ],
   "scripts": {
-    "test": "mocha --compilers js:babel/register",
-    "transpile": "babel src/config.js --out-file lib/config.js"
+    "build": "tsglob && tsc",
+    "test": "npm run build && mocha"
   }
 }

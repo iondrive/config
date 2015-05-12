@@ -1,89 +1,61 @@
-'use strict';
+var assert = require('assert');
+var path = require('path');
 
-const assert = require('assert');
-const path = require('path');
+var ConfigFixture = require('./support/ConfigFixture');
 
-class ConfigFixture {
-  constructor(fixtureName) {
-    this.originalEnv = JSON.parse(JSON.stringify(process.env));
-    this.fixtureName = fixtureName;
-  }
-
-  resetEnv() {
-    // Assume that we're not going to delete any variables from process.env during
-    // our tests.
-    Object.keys(process.env).forEach(key => {
-      if (!this.originalEnv[key]) {
-        delete process.env[key];
-      } else {
-        process.env[key] = this.originalEnv[key];
-      }
-    }, this);
-  }
-
-  getConfig(env) {
-    Object.keys(env).forEach(key => process.env[key] = env[key]);
-    if (this.fixtureName) {
-      process.env.NODE_CONFIG_PATH = path.resolve(__dirname, 'fixtures', this.fixtureName);
-    }
-    delete require.cache[require.resolve('../lib/config.js')]
-    return require('../');
-  }
-}
-
-describe('config', () => {
+describe('config', function () {
   var fixture;
 
-  beforeEach(() => fixture.resetEnv());
+  beforeEach(function () { fixture.resetEnv(); });
 
-  describe('default definition location', () => {
+  describe('default definition location', function () {
     var cwd;
 
-    before(() => {
-      cwd = process.cwd()
+    before(function () {
+      cwd = process.cwd();
       fixture = new ConfigFixture();
       process.chdir(path.resolve(__dirname, 'fixtures'));
     });
 
-    after(() => process.chdir(cwd));
+    after(function () { process.chdir(cwd); });
 
-    it('should load config.js in current working directory', () => {
+    it('should load config.js in current working directory', function () {
       var config = fixture.getConfig({ APP_FOO: 'hello' });
 
       assert.strictEqual(config.FOO, 'hello');
     });
 
-    it('should prevent modification', () => {
+    it('should prevent modification', function () {
       var config = fixture.getConfig({ APP_FOO: 'hello' });
 
-      assert.throws(() => {
-        config.CANT_SET_ME = 123;
-      });
+      config.CANT_SET_ME = 123;
+      
+      assert.strictEqual(typeof config.CANT_SET_ME, 'undefined');
     });
   });
 
-  describe('boolean', () => {
-    before(() => fixture = new ConfigFixture('boolean'));
+  describe('boolean', function () {
+    before(function () { fixture = new ConfigFixture('boolean'); });
 
-    it('should throw when not boolean', () => {
-      assert.throws(() => fixture.getConfig({ APP_FOO: 'hello', APP_BAR: 'true' }));
-      assert.throws(() => fixture.getConfig({ APP_FOO: 'true', APP_BAR: 'hello' }));
+    it('should throw when not boolean', function () {
+      assert.throws(function () { fixture.getConfig({ APP_FOO: 'hello', APP_BAR: 'true' }); });
+      assert.throws(function () { fixture.getConfig({ APP_FOO: 'true', APP_BAR: 'hello' }); });
     });
 
-    it('should resolve true values', () => {
+    it('should resolve true values', function () {
       var trueValues = ['true', 'TRUE', 'yes', 'y', '1'];
 
-      trueValues.forEach(value => {
+      trueValues.forEach(function (value) {
         var config = fixture.getConfig({ APP_FOO: value, APP_BAR: value });
         assert.strictEqual(config.FOO, true);
         assert.strictEqual(config.BAR, true);
       });
     });
 
-    it('should resolve false values', () => {
+    it('should resolve false values', function () {
       var falseValues = ['false', 'FALSE', 'no', 'n', '0'];
 
-      falseValues.forEach(value => {
+      falseValues.forEach(function (value) {
         var config = fixture.getConfig({ APP_FOO: value, APP_BAR: value });
         assert.strictEqual(config.FOO, false);
         assert.strictEqual(config.BAR, false);
@@ -91,18 +63,18 @@ describe('config', () => {
     });
   });
 
-  describe('integer', () => {
-    before(() => fixture = new ConfigFixture('integer'));
+  describe('integer', function () {
+    before(function () { fixture = new ConfigFixture('integer'); });
 
-    it('should throw when not integer', () => {
-      assert.throws(() => fixture.getConfig({ APP_FOO: 'hello', APP_BAR: '123' }));
-      assert.throws(() => fixture.getConfig({ APP_FOO: '123', APP_BAR: 'hello' }));
+    it('should throw when not integer', function () {
+      assert.throws(function () { fixture.getConfig({ APP_FOO: 'hello', APP_BAR: '123' }); });
+      assert.throws(function () { fixture.getConfig({ APP_FOO: '123', APP_BAR: 'hello' }); });
     });
 
-    it('should resolve integer values', () => {
+    it('should resolve integer values', function () {
       var integerValues = ['0', '+123', '-456789'];
 
-      integerValues.forEach(value => {
+      integerValues.forEach(function (value) {
         var config = fixture.getConfig({ APP_FOO: value, APP_BAR: value });
         assert.strictEqual(config.FOO, parseInt(value, 10));
         assert.strictEqual(config.BAR, parseInt(value, 10));
@@ -110,37 +82,37 @@ describe('config', () => {
     });
   });
 
-  describe('number', () => {
-    before(() => fixture = new ConfigFixture('number'));
+  describe('number', function () {
+    before(function () { fixture = new ConfigFixture('number'); });
 
-    it('should throw when not number', () => {
-      assert.throws(() => fixture.getConfig({ APP_FOO: 'hello', APP_BAR: '123.45' }));
-      assert.throws(() => fixture.getConfig({ APP_FOO: '123.45', APP_BAR: 'hello' }));
+    it('should throw when not number', function () {
+      assert.throws(function () { fixture.getConfig({ APP_FOO: 'hello', APP_BAR: '123.45' }); });
+      assert.throws(function () { fixture.getConfig({ APP_FOO: '123.45', APP_BAR: 'hello' }); });
     });
 
-    it('should resolve number values', () => {
+    it('should resolve number values', function () {
       var integerValues = ['0', '+123.45', '-678.9'];
 
-      integerValues.forEach(value => {
+      integerValues.forEach(function (value) {
         var config = fixture.getConfig({ APP_FOO: value, APP_BAR: value });
-        assert.strictEqual(config.FOO, parseFloat(value, 10));
-        assert.strictEqual(config.BAR, parseFloat(value, 10));
+        assert.strictEqual(config.FOO, parseFloat(value));
+        assert.strictEqual(config.BAR, parseFloat(value));
       });
     });
   });
 
-  describe('enum', () => {
-    before(() => fixture = new ConfigFixture('enum'));
+  describe('enum', function () {
+    before(function () { fixture = new ConfigFixture('enum'); });
 
-    it('should throw when not allowed value', () => {
-      assert.throws(() => fixture.getConfig({ APP_FOO: 'hello', APP_BAR: 'b' }));
-      assert.throws(() => fixture.getConfig({ APP_FOO: 'b', APP_BAR: 'hello' }));
+    it('should throw when not allowed value', function () {
+      assert.throws(function () { fixture.getConfig({ APP_FOO: 'hello', APP_BAR: 'b' }); });
+      assert.throws(function () { fixture.getConfig({ APP_FOO: 'b', APP_BAR: 'hello' }); });
     });
 
-    it('should resolve when allowed value', () => {
+    it('should resolve when allowed value', function () {
       var allowedValues = ['a', 'b', 'c'];
 
-      allowedValues.forEach(value => {
+      allowedValues.forEach(function (value) {
         var config = fixture.getConfig({ APP_FOO: value, APP_BAR: value });
         assert.strictEqual(config.FOO, value);
         assert.strictEqual(config.BAR, value);
@@ -148,23 +120,23 @@ describe('config', () => {
     });
   });
 
-  describe('advanced', () => {
-    before(() => fixture = new ConfigFixture('advanced'));
+  describe('advanced', function () {
+    before(function () { fixture = new ConfigFixture('advanced'); });
 
-    it('should throw when not defined', () => {
-      assert.throws(() => fixture.getConfig({}));
+    it('should throw when not defined', function () {
+      assert.throws(function () { fixture.getConfig({}); });
     });
 
-    it('should override env name', () => {
+    it('should override env name', function () {
       var config = fixture.getConfig({ NODE_ENV: 'production' });
       assert.strictEqual(config.NODE_ENV, 'production');
     });
   });
 
-  describe('example', () => {
-    before(() => fixture = new ConfigFixture('example'));
+  describe('example', function () {
+    before(function () { fixture = new ConfigFixture('example'); });
 
-    it('should resolve values', () => {
+    it('should resolve values', function () {
       var config = fixture.getConfig({
         APP_STR: 'hello',
         APP_BOOL: 'false',
@@ -180,10 +152,10 @@ describe('config', () => {
     });
   });
 
-  describe('custom prefix', () => {
-    before(() => fixture = new ConfigFixture('example'));
+  describe('custom prefix', function () {
+    before(function () { fixture = new ConfigFixture('example'); });
 
-    it('should use custom prefix', () => {
+    it('should use custom prefix', function () {
       var config = fixture.getConfig({
         NODE_CONFIG_PREFIX: 'FOO',
         FOO_STR: 'hello',

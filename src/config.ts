@@ -1,6 +1,4 @@
-'use strict';
-
-const path = require('path');
+import path = require('path');
 
 const CONFIG_PATH = path.resolve(process.env.NODE_CONFIG_PATH || './config.js');
 const CONFIG_PREFIX = process.env.NODE_CONFIG_PREFIX || 'APP';
@@ -25,7 +23,7 @@ const parsers = {
     throw Error('Cannot convert to an integer');
   },
   number: value => {
-    if (/^(\-|\+)?[0-9]+(\.[0-9]*)?$/.test(value)) return parseFloat(value, 10);
+    if (/^(\-|\+)?[0-9]+(\.[0-9]*)?$/.test(value)) return parseFloat(value);
     throw Error('Cannot convert to a number');
   },
   enum: (value, values) => {
@@ -34,14 +32,12 @@ const parsers = {
   }
 };
 
-const config = module.exports = Object.create(null);
+const config = Object.create(null);
 
 for (let key in definition) {
   let envKey = (CONFIG_PREFIX + '_' + key).toUpperCase();
 
-  let def = definition[key];
-  let type = def;
-  let values, env;
+  let def = definition[key], type = def, values;
 
   if (Array.isArray(def)) {
     type = 'enum';
@@ -67,3 +63,5 @@ for (let key in definition) {
 }
 
 Object.freeze(config);
+
+export = config;
