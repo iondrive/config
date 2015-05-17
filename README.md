@@ -53,6 +53,7 @@ If the value of a config definition key is an object, it can declare the followi
   * `type`: the type of the config variable.
   * `env`: override the environment variable name (allows you to ignore the config prefix in special circumstances).
   * `values`: for an enum type, the values allowed.
+  * `validator`: a custom validator function that is passed the config value string. If it returns false, the config value is invalid and an error will be thrown.
 
 ```js
 // config.js
@@ -64,11 +65,20 @@ module.exports = {
     values: ['development', 'test', 'production']
   }
 };
+
+module.exports = {
+  CUSTOM_STRING: {
+    type: 'string',
+    validator: function (value) {
+      return /^[a-z]+$/.test(value);
+    }
+  }
+};
 ```
 
 ### Application usage
 
-Given the defintion file abolve and by running the app as follows:
+Given the defintion file above and by running the app as follows:
 
 ```bash
 APP_STR="hello" APP_BOOL="false" APP_INT="123" APP_NUM="3.14" APP_ENM="b" node app.js
