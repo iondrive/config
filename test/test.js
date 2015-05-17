@@ -29,7 +29,7 @@ describe('config', function () {
       var config = fixture.getConfig({ APP_FOO: 'hello' });
 
       config.CANT_SET_ME = 123;
-      
+
       assert.strictEqual(typeof config.CANT_SET_ME, 'undefined');
     });
   });
@@ -171,5 +171,17 @@ describe('config', function () {
       assert.strictEqual(config.ENM, 'b');
     });
   });
-});
 
+  describe('custom validator', function () {
+    before(function () { fixture = new ConfigFixture('validator'); });
+
+    it('should throw when validator returns false', function () {
+      assert.throws(function () { fixture.getConfig({ APP_CUSTOM_STRING: 'not_ok' }); });
+    });
+
+    it('should use custom validator', function () {
+      var config = fixture.getConfig({ APP_CUSTOM_STRING: 'ok' });
+      assert.strictEqual(config.CUSTOM_STRING, 'ok');
+    });
+  });
+});

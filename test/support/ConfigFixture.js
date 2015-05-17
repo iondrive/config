@@ -1,7 +1,8 @@
 var path = require('path');
 
+var originalEnv = JSON.parse(JSON.stringify(process.env));
+
 function ConfigFixture(fixtureName) {
-  this.originalEnv = JSON.parse(JSON.stringify(process.env));
   this.fixtureName = fixtureName;
 }
 
@@ -9,10 +10,10 @@ ConfigFixture.prototype.resetEnv = function () {
   // Assume that we're not going to delete any variables from process.env during
   // our tests.
   Object.keys(process.env).forEach(function (key) {
-    if (!this.originalEnv[key]) {
+    if (!originalEnv[key]) {
       delete process.env[key];
     } else {
-      process.env[key] = this.originalEnv[key];
+      process.env[key] = originalEnv[key];
     }
   }, this);
 };
