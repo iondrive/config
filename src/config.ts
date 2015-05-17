@@ -11,25 +11,25 @@ try {
   throw Error('CONFIG: Can\'t access config definition: Expecting a config.js file in the current working directory or an explicit location via NODE_CONFIG_PATH');
 }
 
-const parsers = {
-  string: value => value,
-  boolean: value => {
-    if (/^true|yes|y|1$/i.test(value)) return true;
-    if (/^false|no|n|0$/i.test(value)) return false;
-    throw Error('Cannot convert to a boolean');
-  },
-  integer: value => {
+const parsers = Object.create(null);
+
+parsers['string'] = value => value;
+parsers['boolean'] = value => {
+  if (/^true|yes|y|1$/i.test(value)) return true;
+  if (/^false|no|n|0$/i.test(value)) return false;
+  throw Error('Cannot convert to a boolean');
+};
+parsers['integer'] = value => {
     if (/^(\-|\+)?[0-9]+$/.test(value)) return parseInt(value, 10);
-    throw Error('Cannot convert to an integer');
-  },
-  number: value => {
-    if (/^(\-|\+)?[0-9]+(\.[0-9]*)?$/.test(value)) return parseFloat(value);
-    throw Error('Cannot convert to a number');
-  },
-  enum: (value, values) => {
-    if (values.indexOf(value) > -1) return value;
-    throw Error('Value not found in enumeration values');
-  }
+  throw Error('Cannot convert to an integer');
+};
+parsers['number'] = value => {
+  if (/^(\-|\+)?[0-9]+(\.[0-9]*)?$/.test(value)) return parseFloat(value);
+  throw Error('Cannot convert to a number');
+};
+parsers['enum'] = (value, values) => {
+  if (values.indexOf(value) > -1) return value;
+  throw Error('Value not found in enumeration values');
 };
 
 const config = Object.create(null);
@@ -56,7 +56,7 @@ for (let key in definition) {
 
   try {
     if (!parsers[type]) throw Error('Invalid type');
-    if (def.validator && !def.validator(value)) {
+    if (typeof def.validator === 'function' && !def.validator(value)) {
       throw Error('Value did not pass validator function');
     }
     config[key] = parsers[type](value, values);
