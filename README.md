@@ -39,14 +39,14 @@ module.exports = {
 
 ### Types
 
-The type must be one of `string`, `boolean`, `integer`, `number`, `enum` (`enum` is implied when the value is an array) or 'duration'.
+The type must be one of `string`, `boolean`, `integer`, `number`, `enum` (`enum` is implied when the value is an array) or `duration`.
 
   * The `string` type will match any value (since environment variables are all strings).
   * The `boolean` type will perform a case insenstive match on `'false'`, `'true'`, `'yes'`, `'no'`, `'y'`, `'n'`, `'1'` and `'0'`.
   * The `integer` type will only match integers in decimal notation, e.g. `'123'`, `'-555'`.
   * The `number` type will only match decimal notation, e.g `'123'`, `'-3.14'`.
   * The `enum` type will only match the string values provided.
-  * The `duration` type will match either integers (where the value represents milliseconds) or a duration string accepted by the [ms] package, e.g. `15m`, `6h` or `14d`.
+  * The `duration` type will match either integers (where the value represents milliseconds) or a duration string accepted by the [ms] package, e.g. `'15m'`, `'6h'` or `'14d'`.
 
 ### Advanced options
 
@@ -103,7 +103,7 @@ assert.strictEqual(config.ENM, 'b');
 
 #### Duration
 
-Duration types are special in that instead of returning a raw value, a number of conversion methods are available to ensure that at the point of use the duration is in the correct units. These conversion methods always round the value, so be careful with your precision.
+Duration types are special in that instead of returning a primitive value, an object with conversion methods is returned to ensure that at the point of use the duration is in the correct units. These conversion methods always round the value, so be careful with your precision.
 
 ```js
 // Assuming APP_DUR has the value '2d'
