@@ -143,7 +143,6 @@ describe('config', function () {
       assert.equal(config.FOO.asHours(), 48);
       assert.equal(config.BAR.asDays(), 731); // rounded from 730.5
       assert.equal(config.BAR.asYears(), 2);
-      console.log(config.FOO.asYears())
     });
   });
 
