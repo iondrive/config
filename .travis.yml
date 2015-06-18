@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - "0.10"
+  - iojs-v2.3.0
+  - iojs-v1.8.2
   - "0.12"
-  - iojs-v1.8.1
+  - "0.10"
 script: "npm run test"
