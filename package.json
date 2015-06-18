@@ -6,7 +6,9 @@
   "license": "MIT",
   "repository": "iondrive/config",
   "main": "./lib/config.js",
-  "dependencies": {},
+  "dependencies": {
+    "ms": "^0.7.1"
+  },
   "devDependencies": {
     "mocha": "^2.2.4",
     "ts-globber": "^0.3.1",

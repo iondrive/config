@@ -1,6 +1,6 @@
 # @iondrive/config
 
-A [12-factor](http://12factor.net/config) configuration module for Node.js/io.js.
+A [12-factor] configuration module for Node.js/io.js.
 
 [![Build Status][travis-image]][travis-url]
 
@@ -32,19 +32,21 @@ module.exports = {
   BOOL: 'boolean',
   INT: 'integer',
   NUM: 'number',
-  ENM: ['a', 'b', 'c']
+  ENM: ['a', 'b', 'c'],
+  DUR: 'duration'
 };
 ```
 
 ### Types
 
-The type must be one of `string`, `boolean`, `integer`, `number` or `enum` (`enum` is implied when the value is an array).
+The type must be one of `string`, `boolean`, `integer`, `number`, `enum` (`enum` is implied when the value is an array) or 'duration'.
 
   * The `string` type will match any value (since environment variables are all strings).
   * The `boolean` type will perform a case insenstive match on `'false'`, `'true'`, `'yes'`, `'no'`, `'y'`, `'n'`, `'1'` and `'0'`.
   * The `integer` type will only match integers in decimal notation, e.g. `'123'`, `'-555'`.
   * The `number` type will only match decimal notation, e.g `'123'`, `'-3.14'`.
   * The `enum` type will only match the string values provided.
+  * The `duration` type will match either integers (where the value represents milliseconds) or a duration string accepted by the [ms] package, e.g. `15m`, `6h` or `14d`.
 
 ### Advanced options
 
@@ -99,6 +101,21 @@ assert.strictEqual(config.NUM, 3.14);
 assert.strictEqual(config.ENM, 'b');
 ```
 
+#### Duration
+
+Duration types are special in that instead of returning a raw value, a number of conversion methods are available to ensure that at the point of use the duration is in the correct units. These conversion methods always round the value, so be careful with your precision.
+
+```js
+// Assuming APP_DUR has the value '2d'
+
+config.DUR.asMilliseconds(); // 172800000
+config.DUR.asSeconds(); // 172800
+config.DUR.asMinutes(); // 2880
+config.DUR.asHours(); // 48
+config.DUR.asDays(); // 2
+config.DUR.asYears(); // 0
+```
+
 ## Prefix
 
 By default all variables must be prefixed by `APP` in the environment variables as above in order to prevent any clobbering of existing environment variables.
@@ -134,5 +151,7 @@ node app.js
 
 [MIT](LICENSE)
 
+[12-factor]: http://12factor.net/config
 [travis-image]: https://img.shields.io/travis/iondrive/config.svg
 [travis-url]: https://travis-ci.org/iondrive/config
+[ms]: https://github.com/rauchg/ms.js

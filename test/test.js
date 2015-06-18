@@ -120,6 +120,33 @@ describe('config', function () {
     });
   });
 
+  describe('duration', function () {
+    before(function () { fixture = new ConfigFixture('duration'); });
+
+    it('should throw when invalid', function () {
+      assert.throws(function () { fixture.getConfig({ APP_FOO: 'hello', APP_BAR: '1d' }); });
+      assert.throws(function () { fixture.getConfig({ APP_FOO: '1d', APP_BAR: 'hello' }); });
+    });
+
+    it('should return duration when valid', function () {
+      var durations = [100, 5000000, '1ms', '1s', '1m', '1h', '1d', '1y'];
+      durations.forEach(function (value) {
+        fixture.getConfig({ APP_FOO: value, APP_BAR: value });
+      });
+    });
+
+    it('should expose conversion methods', function () {
+      var config = fixture.getConfig({ APP_FOO: '2d', APP_BAR: '2y' });
+      assert.equal(config.FOO.asMilliseconds(), 172800000);
+      assert.equal(config.FOO.asSeconds(), 172800);
+      assert.equal(config.FOO.asMinutes(), 2880);
+      assert.equal(config.FOO.asHours(), 48);
+      assert.equal(config.BAR.asDays(), 731); // rounded from 730.5
+      assert.equal(config.BAR.asYears(), 2);
+      console.log(config.FOO.asYears())
+    });
+  });
+
   describe('advanced', function () {
     before(function () { fixture = new ConfigFixture('advanced'); });
 
